@@ -88,9 +88,13 @@ ENV RAILS_ENV="production" \
 
 # Set the run user
 USER mastodon
+
+# Set the work dir
 WORKDIR /opt/mastodon
 
 # Precompile assets
 RUN OTP_SECRET=precompile_placeholder SECRET_KEY_BASE=precompile_placeholder rails assets:precompile && \
     yarn cache clean
 
+# Set the container entry point
+ENTRYPOINT ["/usr/bin/tini", "--"]
