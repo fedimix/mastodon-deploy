@@ -1,0 +1,65 @@
+name: build-containers
+
+on:
+  push:
+    branches: [develop]
+
+env:
+  CONTAINER_IMAGE: mastodon-glitch
+  CONTAINER_VERSION: 4.0.2-devel
+
+  ARTIFACT_REPOSITORY: ${{ secrets.REPOSITORY }}
+  ARTIFACT_REPOSITORY_HOST: ${{ secrets.REPOSITORY_HOST }}
+
+  GITHUB_SHA: ${{ github.sha }}
+
+jobs:
+  build_containers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: txsvc/mastodon
+          ref: main
+
+      - name: checkout deployment artifacts
+        uses: actions/checkout@v3
+        with:
+          repository: txsvc/mastodon-deploy
+          path: ".build"
+
+      - name: debug
+        run: |
+          ls -la
+          ls -la .build
+          
+      - name: setup docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: authenticate gcloud SDK
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: "${{ secrets.GCP_SA_KEY }}"
+        id: auth
+
+      - name: setup gcloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: authenticate artifact repository
+        run: gcloud auth configure-docker $ARTIFACT_REPOSITORY_HOST
+
+      - name: build the base container
+        run: |
+          docker build --rm=true -t "$CONTAINER_IMAGE":latest -f .build/Dockerfile.base .
+
+      - name: tag and push the container
+        run: |
+          docker tag "$CONTAINER_IMAGE":latest $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:latest
+          docker tag "$CONTAINER_IMAGE":latest $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
+          docker tag "$CONTAINER_IMAGE":latest $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
+          docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:latest
+          docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
+          docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
+          docker images

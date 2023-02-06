@@ -1,0 +1,28 @@
+
+- name: create config and data locations
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+  with_list:
+    - "{{ data_root }}/redis"
+    - "{{ data_root }}/postgres"
+    - "{{ data_root }}/mastodon"
+    - "{{ data_root }}/router"
+    - "{{ config_root }}/router"
+    - "{{ data_root }}/router/public/default"
+
+- name: update all container images
+  shell: >
+    {{container_util}} pull {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }}
+
+    {{container_util}} tag {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }} mastodon-glitch:latest
+
+    {{container_util}} pull {{ artifact_repository }}/{{ router_image }}:{{ router_image_version }}
+
+    {{container_util}} pull {{ redis_image }}:{{ redis_image_version }}
+
+    {{container_util}} pull {{ postgres_image }}:{{ postgres_image_version }}
+

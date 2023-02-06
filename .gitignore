@@ -8,6 +8,7 @@ google-credentials.json
 *.prod.yml
 secrets/
 *.env
+.env*
 
 # other stuff no one needs
 .DS_Store

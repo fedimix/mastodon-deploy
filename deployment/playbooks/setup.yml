@@ -1,0 +1,7 @@
+- name: setup the node
+  hosts: all
+
+  roles:
+    - role: ../roles/prepare
+    - role: ../roles/create
+    - role: ../roles/update

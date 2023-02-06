@@ -1,0 +1,64 @@
+- name: update all container images
+  shell: >
+    {{container_util}} pull {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }}
+
+    {{container_util}} tag {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }} mastodon-glitch:latest
+
+- name: stop the pod and remove the containers
+  ignore_errors: true
+  shell: >
+    {{container_util}} pod stop {{ pod_namespace }}
+
+    {{container_util}} rm web
+
+    {{container_util}} rm streaming
+
+    {{container_util}} rm sidekiq
+
+- name: update configuration
+  template:
+    src: ../../inventory/.env.prod
+    dest: "{{ config_root }}/.env.prod"
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+    mode: "644"
+    force: yes
+
+- name: update the router configuration
+  template:
+    src: ../files/Caddyfile
+    dest: "{{ config_root }}/router/Caddyfile"
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+    mode: "644"
+    force: yes
+
+- name: create web container
+  shell: >
+    {{container_util}} create --name web --restart always \
+    --pod {{ pod_namespace }} \
+    --env-file={{ config_root }}/.env.prod \
+    -v {{ data_root }}/mastodon:/mastodon/public/system \
+    {{ base_image }}:{{ base_image_version }} \
+    bundle exec rails s -p 3000
+
+- name: create streaming container
+  shell: >
+    {{container_util}} create --name streaming --restart always \
+    --pod {{ pod_namespace }} \
+    --env-file={{ config_root }}/.env.prod \
+    {{ base_image }}:{{ base_image_version }} \
+    node ./streaming
+
+- name: create sidekiq container
+  shell: >
+    {{container_util}} create --name sidekiq --restart always \
+    --pod {{ pod_namespace }} \
+    --env-file={{ config_root }}/.env.prod \
+    -v {{ data_root }}/mastodon:/mastodon/public/system \
+    {{ base_image }}:{{ base_image_version }} \
+    bundle exec sidekiq
+
+- name: start the pod
+  shell: >
+    {{container_util}} pod start {{ pod_namespace }}

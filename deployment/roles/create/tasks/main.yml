@@ -1,0 +1,79 @@
+
+- name: create a default router configuration
+  template:
+    src: ../files/Caddyfile
+    dest: "{{ config_root }}/router/Caddyfile"
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+    mode: "644"
+    force: no
+
+- name: create container configuration
+  template:
+    src: ../../inventory/.env.prod
+    dest: "{{ config_root }}/.env.prod"
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+    mode: "644"
+    force: yes
+
+- name: create a default static site
+  template:
+    src: ../files/index.html
+    dest: "{{ data_root }}/router/public/default/index.html"
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+    mode: "644"
+    force: no
+
+- name: stop and remove the pod
+  ignore_errors: true
+  shell: >
+    {{container_util}} pod stop {{ pod_namespace }}
+
+    {{container_util}} pod rm {{ pod_namespace }}
+
+- name: create the pod
+  shell: >
+    {{container_util}} pod create -n {{ pod_namespace }} \
+    -p 80:80 -p 443:443
+
+- name: create the router container
+  shell: >
+    {{container_util}} create --name router --restart always \
+    --pod {{ pod_namespace }} \
+    --env=LETS_ENCRYPT_EMAIL={{ lets_encrypt_mail }} \
+    -v {{ config_root }}:/config -v {{ data_root }}/router:/data \
+    {{ router_image }}:{{ router_image_version }}
+
+- name: create redis container
+  shell: >
+    {{container_util}} create --name redis --restart always \
+    --pod {{ pod_namespace }} \
+    -v {{ data_root }}/redis:/data \
+    {{ redis_image }}:{{ redis_image_version }}
+
+- name: create postgres container
+  shell: >
+    {{container_util}} create --name db --restart always \
+    --pod {{ pod_namespace }} \
+    --env-file={{ config_root }}/.env.prod \
+    -v {{ data_root }}/postgres:/var/lib/postgresql/data \
+    {{ postgres_image }}:{{ postgres_image_version }}
+    
+- name: start the pod
+  shell: >
+    {{container_util}} pod start {{ pod_namespace }}
+
+- name: setup the database
+  shell: >
+    {{container_util}} run --name init \
+    --pod {{ pod_namespace }} \
+    --env-file={{ config_root }}/.env.prod \
+    --env=DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
+    {{ base_image }}:{{ base_image_version }} \
+    bundle exec rake db:reset
+
+- name: cleanup
+  shell: >
+    {{container_util}} rm init
