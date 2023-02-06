@@ -1,8 +1,0 @@
-# syntax=docker/dockerfile:1.4
-FROM mastodon-glitch:latest
-
-# Set the work dir and the container entry point
-WORKDIR /opt/mastodon
-
-# Run the main process
-CMD ["bundle" "exec" "sidekiq"]
