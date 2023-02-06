@@ -2,7 +2,7 @@ name: build-containers
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
 
 env:
   CONTAINER_IMAGE: mastodon-glitch
