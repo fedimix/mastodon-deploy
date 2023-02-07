@@ -28,7 +28,7 @@ all:
     pod_namespace: mstdn
 
     # container images
-    base_image: txsvc-hq/txsvc-hq/mastodon-glitch
+    base_image: txsvc-hq/txsvc-hq/mastodon
     base_image_version: latest
     
     router_image: txsvc-hq/txsvc-hq/router
