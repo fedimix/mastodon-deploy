@@ -18,7 +18,7 @@
   shell: >
     {{container_util}} pull {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }}
 
-    {{container_util}} tag {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }} mastodon-glitch:latest
+    {{container_util}} tag {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }} mastodon:latest
 
     {{container_util}} pull {{ artifact_repository }}/{{ router_image }}:{{ router_image_version }}
 

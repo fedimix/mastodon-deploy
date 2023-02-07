@@ -1,0 +1,29 @@
+
+- name: stop the app
+  shell: >
+    {{container_util}} stop sidekiq
+
+    {{container_util}} stop streaming
+
+    {{container_util}} stop web
+
+- name: migrate the database
+  shell: >
+    {{container_util}} run --name migration \
+    --pod {{ pod_namespace }} \
+    --env-file={{ config_root }}/.env.prod \
+    --env=DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
+    {{ base_image }}:{{ base_image_version }} \
+    bundle exec rake db:migrate
+
+- name: start the app
+  shell: >
+    {{container_util}} start sidekiq
+
+    {{container_util}} start streaming
+
+    {{container_util}} start web
+
+- name: cleanup
+  shell: >
+    {{container_util}} rm migration

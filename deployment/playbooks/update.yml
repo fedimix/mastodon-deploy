@@ -1,8 +1,6 @@
-- name: setup the node
+- name: update the node
   hosts: all
 
   roles:
-    - role: ../roles/prepare
-    - role: ../roles/create
     - role: ../roles/update
     - role: ../roles/migrate
