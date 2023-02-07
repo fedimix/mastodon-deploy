@@ -1,0 +1,16 @@
+
+- name: stop and remove the pod
+  ignore_errors: true
+  shell: >
+    {{container_util}} pod stop {{ pod_namespace }}
+
+    {{container_util}} pod rm {{ pod_namespace }}
+
+- name: clean storage
+  shell: >
+    rm -rf {{ data_root }}/redis
+    rm -rf {{ data_root }}/postgres
+    rm -rf {{ data_root }}/mastodon
+    # keep {{ data_root }}/router to preserve certificates
+    # keep {{ config_root }}/router to preserve certificates
+

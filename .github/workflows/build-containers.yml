@@ -5,8 +5,11 @@ on:
     branches: [main]
 
 env:
-  CONTAINER_IMAGE: mastodon-glitch
-  CONTAINER_VERSION: 4.0.2-devel
+  UPSTREAM_REPO: mastodon/mastodon
+  UPSTREAM_REPO_REF: v4.1.0rc3
+
+  CONTAINER_IMAGE: mastodon
+  CONTAINER_VERSION: v4.1.0rc3
 
   ARTIFACT_REPOSITORY: ${{ secrets.REPOSITORY }}
   ARTIFACT_REPOSITORY_HOST: ${{ secrets.REPOSITORY_HOST }}
@@ -18,11 +21,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout code
+      - name: checkout upstream code
         uses: actions/checkout@v3
         with:
-          repository: txsvc/mastodon
-          ref: develop
+          repository: $UPSTREAM_REPO
+          ref: $UPSTREAM_REPO_REF
 
       - name: checkout deployment artifacts
         uses: actions/checkout@v3
