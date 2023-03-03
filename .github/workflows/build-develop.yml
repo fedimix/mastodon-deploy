@@ -1,4 +1,4 @@
-name: build-containers
+name: build-develop-containers
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
 
 env:
   CONTAINER_IMAGE: mastodon
-  CONTAINER_VERSION: 4.1.0_dev
+  CONTAINER_VERSION: develop
 
   ARTIFACT_REPOSITORY: ${{ secrets.ARTIFACT_REPOSITORY }}
   ARTIFACT_REPOSITORY_HOST: ${{ secrets.ARTIFACT_REPOSITORY_HOST }}
@@ -14,7 +14,7 @@ env:
   GITHUB_SHA: ${{ github.sha }}
 
 jobs:
-  build_containers:
+  build_develop:
     runs-on: ubuntu-latest
 
     steps:
@@ -57,4 +57,3 @@ jobs:
           docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:latest
           docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
           docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
-          docker images
