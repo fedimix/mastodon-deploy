@@ -47,7 +47,7 @@ jobs:
 
       - name: build the base container
         run: |
-          docker build --rm=true -t "$CONTAINER_IMAGE":latest -f .build/Dockerfile.base .
+          docker build --rm=true -t "$CONTAINER_IMAGE":latest -f .build/Dockerfile.develop .
 
       - name: tag and push the container
         run: |

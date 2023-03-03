@@ -47,7 +47,7 @@ jobs:
 
       - name: build the base container
         run: |
-          docker build --rm=true -t "$CONTAINER_IMAGE":"$CONTAINER_VERSION" -f ./Dockerfile .
+          docker build --rm=true -t "$CONTAINER_IMAGE":"$CONTAINER_VERSION" -f .build/Dockerfile.release .
 
       - name: tag and push the container
         run: |
