@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1.4
 # This needs to be bullseye-slim because the Ruby image is built on bullseye-slim
-ARG NODE_VERSION="16.18.1-bullseye-slim"
+ARG NODE_VERSION="16.19-bullseye-slim"
 
-FROM ghcr.io/moritzheiber/ruby-jemalloc:3.0.4-slim as ruby
+FROM ghcr.io/moritzheiber/ruby-jemalloc:3.2.1-slim as ruby
 FROM node:${NODE_VERSION} as build
 
 COPY --from=ruby /opt/ruby /opt/ruby
@@ -84,6 +84,7 @@ COPY --chown=mastodon:mastodon --from=build /opt/mastodon /opt/mastodon
 ENV RAILS_ENV="production" \
     NODE_ENV="production" \
     RAILS_SERVE_STATIC_FILES="true" \
+    RUBY_YJIT_ENABLE="true" \
     BIND="0.0.0.0"
 
 # Set the run user
