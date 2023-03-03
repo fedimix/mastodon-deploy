@@ -6,7 +6,7 @@ on:
 
 env:
   CONTAINER_IMAGE: mastodon
-  CONTAINER_VERSION: develop
+  CONTAINER_VERSION: v4.1.0
 
   ARTIFACT_REPOSITORY: ${{ secrets.ARTIFACT_REPOSITORY }}
   ARTIFACT_REPOSITORY_HOST: ${{ secrets.ARTIFACT_REPOSITORY_HOST }}
@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: fedimix/mastodon
-          ref: v4.1.0
+          ref: release
 
       - name: checkout deployment artifacts
         uses: actions/checkout@v3
