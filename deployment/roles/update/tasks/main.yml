@@ -42,7 +42,7 @@
     {{container_util}} create --name web --restart always \
     --pod {{ pod_namespace }} \
     --env-file={{ config_root }}/.env.prod \
-    -v {{ data_root }}/mastodon:/mastodon/public/system \
+    -v {{ data_root }}/storage/mastodon:/mastodon/public/system \
     {{ base_image }}:{{ base_image_version }} \
     bundle exec rails s -p 3000
 
@@ -61,7 +61,7 @@
     {{container_util}} create --name sidekiq --restart always \
     --pod {{ pod_namespace }} \
     --env-file={{ config_root }}/.env.prod \
-    -v {{ data_root }}/mastodon:/mastodon/public/system \
+    -v {{ data_root }}/storage/mastodon:/mastodon/public/system \
     {{ base_image }}:{{ base_image_version }} \
     bundle exec sidekiq
 

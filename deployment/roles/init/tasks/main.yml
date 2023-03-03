@@ -1,0 +1,15 @@
+
+
+- name: setup the database
+  shell: >
+    {{container_util}} run --name init \
+    --pod {{ pod_namespace }} \
+    --env-file={{ config_root }}/.env.prod \
+    --env=DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
+    {{ base_image }}:{{ base_image_version }} \
+    bundle exec rake db:reset
+
+
+- name: cleanup
+  shell: >
+    {{container_util}} rm init

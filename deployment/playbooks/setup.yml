@@ -4,5 +4,6 @@
   roles:
     - role: ../roles/prepare_mstdn
     - role: ../roles/create
+    - role: ../roles/init
     - role: ../roles/update
     - role: ../roles/migrate

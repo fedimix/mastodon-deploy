@@ -7,12 +7,12 @@
     owner: "{{ svc_user }}"
     group: "{{ svc_user }}"
   with_list:
-    - "{{ data_root }}/redis"
-    - "{{ data_root }}/postgres"
-    - "{{ data_root }}/mastodon"
-    - "{{ data_root }}/router"
-    - "{{ config_root }}/router"
+    - "{{ data_root }}/storage/redis"
+    - "{{ data_root }}/storage/postgres"
+    - "{{ data_root }}/storage/mastodon"
+    - "{{ data_root }}/storage/router"
     - "{{ data_root }}/router/public/default"
+    - "{{ config_root }}/router"
 
 
 - name: update all container images

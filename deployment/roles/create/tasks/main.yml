@@ -56,7 +56,7 @@
   shell: >
     {{container_util}} create --name redis --restart always \
     --pod {{ pod_namespace }} \
-    -v {{ data_root }}/redis:/data \
+    -v {{ data_root }}/storage/redis:/data \
     {{ redis_image }}:{{ redis_image_version }}
 
 
@@ -65,7 +65,7 @@
     {{container_util}} create --name db --restart always \
     --pod {{ pod_namespace }} \
     --env-file={{ config_root }}/.env.prod \
-    -v {{ data_root }}/postgres:/var/lib/postgresql/data \
+    -v {{ data_root }}/storage/postgres:/var/lib/postgresql/data \
     {{ postgres_image }}:{{ postgres_image_version }}
 
 
@@ -73,17 +73,3 @@
   shell: >
     {{container_util}} pod start {{ pod_namespace }}
 
-
-- name: setup the database
-  shell: >
-    {{container_util}} run --name init \
-    --pod {{ pod_namespace }} \
-    --env-file={{ config_root }}/.env.prod \
-    --env=DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
-    {{ base_image }}:{{ base_image_version }} \
-    bundle exec rake db:reset
-
-
-- name: cleanup
-  shell: >
-    {{container_util}} rm init
