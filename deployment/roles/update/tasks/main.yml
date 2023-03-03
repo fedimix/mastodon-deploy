@@ -4,6 +4,7 @@
 
     {{container_util}} tag {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }} mastodon:latest
 
+
 - name: stop the pod and remove the containers
   ignore_errors: true
   shell: >
@@ -15,6 +16,7 @@
 
     {{container_util}} rm sidekiq
 
+
 - name: update configuration
   template:
     src: ../../inventory/.env.prod
@@ -23,6 +25,7 @@
     group: "{{ svc_user }}"
     mode: "644"
     force: yes
+
 
 - name: update the router configuration
   template:
@@ -33,6 +36,7 @@
     mode: "644"
     force: yes
 
+
 - name: create web container
   shell: >
     {{container_util}} create --name web --restart always \
@@ -42,6 +46,7 @@
     {{ base_image }}:{{ base_image_version }} \
     bundle exec rails s -p 3000
 
+
 - name: create streaming container
   shell: >
     {{container_util}} create --name streaming --restart always \
@@ -49,6 +54,7 @@
     --env-file={{ config_root }}/.env.prod \
     {{ base_image }}:{{ base_image_version }} \
     node ./streaming
+
 
 - name: create sidekiq container
   shell: >
@@ -58,6 +64,7 @@
     -v {{ data_root }}/mastodon:/mastodon/public/system \
     {{ base_image }}:{{ base_image_version }} \
     bundle exec sidekiq
+
 
 - name: start the pod
   shell: >

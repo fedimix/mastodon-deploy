@@ -1,4 +1,4 @@
-- name: update the node
+- name: update the mastodon node
   hosts: all
 
   roles:

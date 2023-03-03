@@ -7,6 +7,7 @@
 
     {{container_util}} stop web
 
+
 - name: migrate the database
   shell: >
     {{container_util}} run --name migration \
@@ -16,6 +17,7 @@
     {{ base_image }}:{{ base_image_version }} \
     bundle exec rake db:migrate
 
+
 - name: start the app
   shell: >
     {{container_util}} start sidekiq
@@ -23,6 +25,7 @@
     {{container_util}} start streaming
 
     {{container_util}} start web
+
 
 - name: cleanup
   shell: >

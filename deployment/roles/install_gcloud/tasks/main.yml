@@ -1,0 +1,35 @@
+- name: update packages
+  become: true
+  template:
+    src: ../files/google-cloud-sdk.repo
+    dest: /etc/yum.repos.d/google-cloud-sdk.repo
+    owner: root
+    group: root
+    force: yes
+
+
+- name: install gcloud SDK
+  become: true
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - google-cloud-sdk
+
+
+- name: google cloud credentials
+  template:
+    src: ../../../secrets/{{ gcloud_credentials_file }}
+    dest: "{{ config_root }}/credentials.json"
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+    mode: "644"
+    force: no
+
+
+- name: authenticate gcloud SDK
+  shell: >
+    gcloud auth activate-service-account {{ gcloud_service_account }} --key-file=/opt/config/credentials.json
+
+    gcloud auth configure-docker {{ artifact_repository }} --quiet

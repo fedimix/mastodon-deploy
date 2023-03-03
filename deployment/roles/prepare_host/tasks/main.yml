@@ -1,0 +1,76 @@
+- name: upgrade all
+  become: true
+  yum:
+    name: "*"
+    state: latest
+
+
+- name: install additional packages
+  become: true
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - epel-release
+      - bind-utils
+      - podman
+      - git
+
+
+- name: create svc user
+  become: true
+  user:
+    name: "{{ svc_user }}"
+    uid: "{{ svc_user_uid }}"
+
+
+- name: install fail2ban
+  become: true
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - epel-release
+      - fail2ban
+
+
+- name: enable fail2ban
+  become: true
+  shell: >
+    systemctl enable fail2ban
+
+    systemctl start fail2ban
+
+
+- name: upload ssh key
+  become: true
+  authorized_key:
+    user: "{{ svc_user }}"
+    state: present
+    key: "{{ lookup('file', '{{ ssh_public_key_file }}') }}"
+
+
+- name: create config and data locations
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+  with_list:
+    - "{{ config_root }}"
+    - "{{ data_root }}"
+
+
+- name: mount storage
+  become: true
+  shell: >
+    sudo mkfs.ext4 -F /dev/disk/by-id/{{ volume_name}}
+
+    mkdir -p "{{ volume_mount_point }}"
+
+    mount -o discard,defaults /dev/disk/by-id/{{ volume_name}} {{ volume_mount_point }}
+    
+    echo "/dev/disk/by-id/{{ volume_name }} {{ volume_mount_point }} ext4 discard,nofail,defaults 0 0" >> /etc/fstab

@@ -7,6 +7,7 @@ google-credentials.json
 *.pub
 *.prod.yml
 secrets/
+inventory/
 *.env
 .env*
 

@@ -1,0 +1,7 @@
+- name: prepare the node
+  hosts: all
+
+  roles:
+    - role: ../roles/prepare_host
+    - role: ../roles/install_gcloud
+

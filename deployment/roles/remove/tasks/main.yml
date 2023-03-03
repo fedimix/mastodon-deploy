@@ -6,6 +6,7 @@
 
     {{container_util}} pod rm {{ pod_namespace }}
 
+
 - name: clean storage
   shell: >
     rm -rf {{ data_root }}/redis

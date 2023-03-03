@@ -1,8 +1,8 @@
-- name: setup the node
+- name: setup the mastodon node
   hosts: all
 
   roles:
-    - role: ../roles/prepare
+    - role: ../roles/prepare_mstdn
     - role: ../roles/create
     - role: ../roles/update
     - role: ../roles/migrate
