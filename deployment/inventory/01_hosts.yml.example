@@ -1,0 +1,34 @@
+all:
+  hosts:
+    mstdn.fedimix.dev:
+      # top-level domains
+      local_domain: example.dev
+      web_domain: mstdn.example.dev
+
+      # the owner of the instance
+      mastodon_owner_mail: 'ops@example.com'
+
+      # key used to sign/verify stuff
+      secret_key_base: 93a...
+      otp_secret: a8a...
+
+      vapid_private_key: GUae...
+      vapid_public_key: BE7...
+
+      # infrastructure
+      db_name: mastodon_production
+      db_user: mastodon
+      db_user_password: mastodon
+
+      # lets encrypt
+      lets_encrypt_mail: 'ops@example.com'
+
+      # key used for the user
+      ssh_public_key_file: ~/.ssh/id_rsa.pub
+
+      # attach storage here
+      volume_name: scsi-0HC_Volume_xxx
+      volume_mount_point: /opt/data/storage
+      
+  vars:
+    # stuff goes here

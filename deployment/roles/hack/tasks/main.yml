@@ -2,20 +2,27 @@
 #- name: update configuration
 #  template:
 #    src: ../files/.env.prod
-#    dest: "{{ config_root }}/.hack.prod"
+#    dest: "{{ config_root }}/.env.prod"
+#    #dest: "{{ config_root }}/.hack.prod"
 #    owner: "{{ svc_user }}"
 #    group: "{{ svc_user }}"
 #    mode: "644"
 #    force: yes
 
 
-- name: update the router configuration
-  template:
-    src: ../files/Caddyfile
-    dest: "{{ config_root }}/router/Caddyfile"
-    #dest: "{{ config_root }}/Caddyfile"
-    owner: "{{ svc_user }}"
-    group: "{{ svc_user }}"
-    mode: "644"
-    force: yes
+#- name: update the router configuration
+#  template:
+#    src: ../files/Caddyfile
+#    dest: "{{ config_root }}/router/Caddyfile"
+#    #dest: "{{ config_root }}/Caddyfile"
+#    owner: "{{ svc_user }}"
+#    group: "{{ svc_user }}"
+#    mode: "644"
+#    force: yes
 
+- name: create a root user for the instance
+  shell: >
+    podman run --pod mstdn -ti --name ops \
+    --env-file={{ config_root }}/.env.prod \
+    {{ base_image }}:{{ base_image_version }} \
+    bin/tootctl accounts create ops --email {{ mastodon_owner_mail }} --confirmed --role Owner > /opt/config/master.key

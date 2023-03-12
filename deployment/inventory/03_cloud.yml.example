@@ -1,0 +1,12 @@
+all:      
+  vars:
+    # google cloud credentials
+    gcloud_credentials_file: service-credentials.json
+    gcloud_service_account: example-service@example-hq.iam.gserviceaccount.com
+    
+    # smtp service (e.g. mailgun)
+    smtp_server: smtp.eu.mailgun.org
+    smtp_port: 587
+    smtp_login: postmaster@example.com
+    smtp_password: c56...
+    smtp_from_address: hello@example.com

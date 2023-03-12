@@ -1,0 +1,17 @@
+all:    
+  vars:
+    # google cloud artifact registry host
+    artifact_repository: europe-west3-docker.pkg.dev
+
+    # container images
+    base_image: txsvc-hq/txsvc-hq/mastodon
+    base_image_version: latest
+    
+    router_image: txsvc-hq/txsvc-hq/router
+    router_image_version: 0.2.2
+
+    redis_image: docker.io/library/redis
+    redis_image_version: 7-alpine
+
+    postgres_image: docker.io/library/postgres
+    postgres_image_version: 14-alpine

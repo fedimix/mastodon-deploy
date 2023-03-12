@@ -6,6 +6,8 @@
 	root * /data/public/default
 	
         file_server
+
+        redir /.well-known/webfinger https://{{ web_domain }}{uri} 301
 }
 
 {{ web_domain }} {

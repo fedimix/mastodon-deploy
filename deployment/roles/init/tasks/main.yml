@@ -10,6 +10,14 @@
     bundle exec rake db:reset
 
 
+- name: create a root user for the instance
+  shell: >
+    podman run --pod mstdn -ti --name owner \
+    --env-file={{ config_root }}/.env.prod \
+    {{ base_image }}:{{ base_image_version }} \
+    bin/tootctl accounts create ops --email {{ mastodon_owner_mail }} --confirmed --role Owner > /opt/config/master.key
+
+
 - name: cleanup
   shell: >
-    podman rm init
+    podman rm init owner
