@@ -16,3 +16,4 @@ ansible-playbook -i inventory/ playbooks/install.yml
 ```
 
 Wait a couple of minutes ... done.
+
