@@ -5,7 +5,7 @@ all:
     config_root: /opt/config
 
     # user and service owner
-    svc_user: mstdn
+    svc_user: mastodon
     svc_user_uid: 1001
 
     # ansible configuration
