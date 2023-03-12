@@ -2,7 +2,7 @@ name: build-develop-containers
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
 
 env:
   CONTAINER_IMAGE: mastodon

@@ -2,7 +2,7 @@ name: build-release-containers
 
 on:
   push:
-    branches: [main]
+    branches: [release]
 
 env:
   CONTAINER_IMAGE: mastodon
