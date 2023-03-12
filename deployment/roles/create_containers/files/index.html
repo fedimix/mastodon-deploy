@@ -1,8 +1,10 @@
 <htm>
   <head>
-    <title>{{ inventory_hostname }}</title>
+    <title>{{ local_domain }}</title>
   </head>
   <body>
-    <p>This is {{ inventory_hostname }}.</p>
+    <p>This is {{ local_domain }}.</p>
+
+    The <a href="{{ web_domain }}" target="_blank">https://{{ web_domain }}</a> instance is over here !
   </body>
 </htm>

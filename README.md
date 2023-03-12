@@ -7,6 +7,8 @@ Go to `/deployment/inventory` and make a copy of all `*.yml.sample` files (remov
 
 Review `/deployment/roles/create_containers/files/.env.prod` and change or add Mastodon specific configuration here. See [.env.production.sample](https://github.com/fedimix/mastodon/blob/main/.env.production.sample) for a list of all supported values.
 
+To start the deployment:
+
 ```shell
 cd deployment
 
