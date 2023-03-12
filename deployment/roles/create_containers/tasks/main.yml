@@ -11,7 +11,7 @@
 
 - name: create container configuration
   template:
-    src: ../../inventory/.env.prod
+    src: ../files/.env.prod
     dest: "{{ config_root }}/.env.prod"
     owner: "{{ svc_user }}"
     group: "{{ svc_user }}"
@@ -32,20 +32,20 @@
 - name: stop and remove the pod
   ignore_errors: true
   shell: >
-    {{container_util}} pod stop {{ pod_namespace }}
+    podman pod stop {{ pod_namespace }}
 
-    {{container_util}} pod rm {{ pod_namespace }}
+    podman pod rm {{ pod_namespace }}
 
 
 - name: create the pod
   shell: >
-    {{container_util}} pod create -n {{ pod_namespace }} \
+    podman pod create -n {{ pod_namespace }} \
     -p 80:80 -p 443:443
 
 
 - name: create the router container
   shell: >
-    {{container_util}} create --name router --restart always \
+    podman create --name router --restart always \
     --pod {{ pod_namespace }} \
     --env=LETS_ENCRYPT_EMAIL={{ lets_encrypt_mail }} \
     -v {{ config_root }}:/config -v {{ data_root }}/router:/data \
@@ -54,7 +54,7 @@
 
 - name: create redis container
   shell: >
-    {{container_util}} create --name redis --restart always \
+    podman create --name redis --restart always \
     --pod {{ pod_namespace }} \
     -v {{ data_root }}/storage/redis:/data \
     {{ redis_image }}:{{ redis_image_version }}
@@ -62,7 +62,7 @@
 
 - name: create postgres container
   shell: >
-    {{container_util}} create --name db --restart always \
+    podman create --name db --restart always \
     --pod {{ pod_namespace }} \
     --env-file={{ config_root }}/.env.prod \
     -v {{ data_root }}/storage/postgres:/var/lib/postgresql/data \
@@ -71,5 +71,8 @@
 
 - name: start the pod
   shell: >
-    {{container_util}} pod start {{ pod_namespace }}
+    podman pod start {{ pod_namespace }}
 
+- name: pause to give containers time to start-up
+  ansible.builtin.pause:
+    minutes: 1

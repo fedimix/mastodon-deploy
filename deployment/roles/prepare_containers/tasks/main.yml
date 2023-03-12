@@ -17,13 +17,13 @@
 
 - name: update all container images
   shell: >
-    {{container_util}} pull {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }}
+    podman pull {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }}
 
-    {{container_util}} tag {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }} mastodon:latest
+    podman tag {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }} mastodon:latest
 
-    {{container_util}} pull {{ artifact_repository }}/{{ router_image }}:{{ router_image_version }}
+    podman pull {{ artifact_repository }}/{{ router_image }}:{{ router_image_version }}
 
-    {{container_util}} pull {{ redis_image }}:{{ redis_image_version }}
+    podman pull {{ redis_image }}:{{ redis_image_version }}
 
-    {{container_util}} pull {{ postgres_image }}:{{ postgres_image_version }}
+    podman pull {{ postgres_image }}:{{ postgres_image_version }}
 

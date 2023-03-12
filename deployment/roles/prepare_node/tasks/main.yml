@@ -52,6 +52,18 @@
     key: "{{ lookup('file', '{{ ssh_public_key_file }}') }}"
 
 
+- name: mount storage
+  become: true
+  shell: >
+    sudo mkfs.ext4 -F /dev/disk/by-id/{{ volume_name}}
+
+    mkdir -p "{{ volume_mount_point }}"
+
+    mount -o discard,defaults /dev/disk/by-id/{{ volume_name}} {{ volume_mount_point }}
+    
+    echo "/dev/disk/by-id/{{ volume_name }} {{ volume_mount_point }} ext4 discard,nofail,defaults 0 0" >> /etc/fstab
+
+
 - name: create config and data locations
   become: true
   file:
@@ -63,14 +75,3 @@
     - "{{ config_root }}"
     - "{{ data_root }}"
 
-
-- name: mount storage
-  become: true
-  shell: >
-    sudo mkfs.ext4 -F /dev/disk/by-id/{{ volume_name}}
-
-    mkdir -p "{{ volume_mount_point }}"
-
-    mount -o discard,defaults /dev/disk/by-id/{{ volume_name}} {{ volume_mount_point }}
-    
-    echo "/dev/disk/by-id/{{ volume_name }} {{ volume_mount_point }} ext4 discard,nofail,defaults 0 0" >> /etc/fstab

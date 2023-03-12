@@ -1,4 +1,14 @@
-{{ inventory_hostname }} {
+{
+        email {{ lets_encrypt_mail }}
+}
+
+{{ local_domain }} {
+	root * /data/public/default
+	
+        file_server
+}
+
+{{ web_domain }} {
         
         encode gzip
 

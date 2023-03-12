@@ -8,6 +8,7 @@ google-credentials.json
 *.prod.yml
 secrets/
 inventory/
+hack/
 *.env
 .env*
 

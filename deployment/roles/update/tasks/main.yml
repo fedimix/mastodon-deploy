@@ -1,45 +1,25 @@
 - name: update all container images
   shell: >
-    {{container_util}} pull {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }}
+    podman pull {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }}
 
-    {{container_util}} tag {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }} mastodon:latest
+    podman tag {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }} mastodon:latest
 
 
 - name: stop the pod and remove the containers
   ignore_errors: true
   shell: >
-    {{container_util}} pod stop {{ pod_namespace }}
+    podman pod stop {{ pod_namespace }}
 
-    {{container_util}} rm web
+    podman rm web
 
-    {{container_util}} rm streaming
+    podman rm streaming
 
-    {{container_util}} rm sidekiq
-
-
-- name: update configuration
-  template:
-    src: ../../inventory/.env.prod
-    dest: "{{ config_root }}/.env.prod"
-    owner: "{{ svc_user }}"
-    group: "{{ svc_user }}"
-    mode: "644"
-    force: yes
-
-
-- name: update the router configuration
-  template:
-    src: ../files/Caddyfile
-    dest: "{{ config_root }}/router/Caddyfile"
-    owner: "{{ svc_user }}"
-    group: "{{ svc_user }}"
-    mode: "644"
-    force: yes
+    podman rm sidekiq
 
 
 - name: create web container
   shell: >
-    {{container_util}} create --name web --restart always \
+    podman create --name web --restart always \
     --pod {{ pod_namespace }} \
     --env-file={{ config_root }}/.env.prod \
     -v {{ data_root }}/storage/mastodon:/mastodon/public/system \
@@ -49,7 +29,7 @@
 
 - name: create streaming container
   shell: >
-    {{container_util}} create --name streaming --restart always \
+    podman create --name streaming --restart always \
     --pod {{ pod_namespace }} \
     --env-file={{ config_root }}/.env.prod \
     {{ base_image }}:{{ base_image_version }} \
@@ -58,7 +38,7 @@
 
 - name: create sidekiq container
   shell: >
-    {{container_util}} create --name sidekiq --restart always \
+    podman create --name sidekiq --restart always \
     --pod {{ pod_namespace }} \
     --env-file={{ config_root }}/.env.prod \
     -v {{ data_root }}/storage/mastodon:/mastodon/public/system \
@@ -68,4 +48,4 @@
 
 - name: start the pod
   shell: >
-    {{container_util}} pod start {{ pod_namespace }}
+    podman pod start {{ pod_namespace }}

@@ -1,0 +1,21 @@
+
+#- name: update configuration
+#  template:
+#    src: ../files/.env.prod
+#    dest: "{{ config_root }}/.hack.prod"
+#    owner: "{{ svc_user }}"
+#    group: "{{ svc_user }}"
+#    mode: "644"
+#    force: yes
+
+
+- name: update the router configuration
+  template:
+    src: ../files/Caddyfile
+    dest: "{{ config_root }}/router/Caddyfile"
+    #dest: "{{ config_root }}/Caddyfile"
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+    mode: "644"
+    force: yes
+

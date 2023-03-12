@@ -1,0 +1,11 @@
+- name: prepare the node and install mastodon
+  hosts: all
+
+  roles:
+    - role: ../roles/prepare_node
+    - role: ../roles/prepare_gcloud
+    - role: ../roles/prepare_containers
+    - role: ../roles/create_containers
+    - role: ../roles/init
+    - role: ../roles/update
+    - role: ../roles/migrate

@@ -1,8 +1,8 @@
 
 
-- name: setup the database
+- name: create the database
   shell: >
-    {{container_util}} run --name init \
+    podman run --name init \
     --pod {{ pod_namespace }} \
     --env-file={{ config_root }}/.env.prod \
     --env=DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
@@ -12,4 +12,4 @@
 
 - name: cleanup
   shell: >
-    {{container_util}} rm init
+    podman rm init
