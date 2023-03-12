@@ -29,6 +29,12 @@
     force: no
 
 
+# see https://github.com/quic-go/quic-go/wiki/UDP-Receive-Buffer-Size
+- name: update the node
+  shell: >
+    sysctl -w net.core.rmem_max=2500000
+
+
 - name: stop and remove the pod
   ignore_errors: true
   shell: >

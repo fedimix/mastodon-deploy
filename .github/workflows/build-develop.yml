@@ -2,7 +2,7 @@ name: build-develop-containers
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
 
 env:
   CONTAINER_IMAGE: mastodon
@@ -47,13 +47,13 @@ jobs:
 
       - name: build the base container
         run: |
-          docker build --rm=true -t "$CONTAINER_IMAGE":latest -f .build/Dockerfile.develop .
+          docker build --rm=true -t "$CONTAINER_IMAGE":develop -f .build/Dockerfile.develop .
 
       - name: tag and push the container
         run: |
-          docker tag "$CONTAINER_IMAGE":latest $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:latest
-          docker tag "$CONTAINER_IMAGE":latest $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
-          docker tag "$CONTAINER_IMAGE":latest $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
-          docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:latest
+          docker tag "$CONTAINER_IMAGE":develop $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:develop
+          docker tag "$CONTAINER_IMAGE":develop $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
+          docker tag "$CONTAINER_IMAGE":develop $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
+          docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:develop
           docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
           docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION

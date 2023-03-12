@@ -5,7 +5,7 @@ all:
 
     # container images
     base_image: txsvc-hq/txsvc-hq/mastodon
-    base_image_version: latest
+    base_image_version: stable
     
     router_image: txsvc-hq/txsvc-hq/router
     router_image_version: 0.2.2
