@@ -1,41 +1,9 @@
 
-- name: stop the pod and remove the containers etc
-  ignore_errors: true
-  shell: >
-    podman pod stop {{ pod_namespace }}
-
-    podman rm web
-
-    podman rm streaming
-
-    podman rm sidekiq
-
-
-- name: remove the infra containers
-  ignore_errors: true
-  shell: >
-    podman rm redis
-
-    podman rm db
-
-
-- name: remove the container images
-  ignore_errors: true
-  shell: >
-    podman rmi {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }}
-
-    podman rmi {{ redis_image }}:{{ redis_image_version }}
-
-    podman rmi {{ postgres_image }}:{{ postgres_image_version }}
-
-
-- name: remove the container volumes
-  ignore_errors: true
-  shell: >
-    rm -rf {{ data_root }}/storage/redis
-
-    rm -rf {{ data_root }}/storage/postgres
-
-    rm -rf {{ data_root }}/storage/mastodon
-
-    rm -rf {{ data_root }}/router/public/default
+- name: create a default static site for LOCAL_DOMAIN
+  template:
+    src: ../files/index.html
+    dest: "{{ storage_root }}/router/{{ namespace }}/public/index.html"
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+    mode: "644"
+    force: no

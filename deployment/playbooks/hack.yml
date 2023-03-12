@@ -2,4 +2,13 @@
   hosts: all
 
   roles:
-    - role: ../roles/hack
+    #- role: ../roles/hack
+
+    #- role: ../roles/prepare_node
+    #- role: ../roles/prepare_gcloud
+    #- role: ../roles/prepare_containers
+    #- role: ../roles/create_containers
+    #- role: ../roles/init
+    #- role: ../roles/update
+    #- role: ../roles/migrate
+    
