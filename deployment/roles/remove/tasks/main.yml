@@ -2,16 +2,13 @@
 - name: stop and remove the pod
   ignore_errors: true
   shell: >
-    podman pod stop {{ pod_namespace }}
+    podman pod stop {{ namespace }}
 
-    podman pod rm {{ pod_namespace }}
-
+    podman pod rm {{ namespace }}
 
 - name: clean storage
   shell: >
-    rm -rf {{ data_root }}/redis
-    rm -rf {{ data_root }}/postgres
-    rm -rf {{ data_root }}/mastodon
+    rm -rf {{ storage_root }}/{{ namespace }}
     # keep {{ data_root }}/router to preserve certificates
     # keep {{ config_root }}/router to preserve certificates
 

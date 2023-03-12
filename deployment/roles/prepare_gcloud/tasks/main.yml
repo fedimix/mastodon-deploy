@@ -7,7 +7,6 @@
     group: root
     force: yes
 
-
 - name: install gcloud SDK
   become: true
   yum:
@@ -17,7 +16,6 @@
     packages:
       - google-cloud-sdk
 
-
 - name: google cloud credentials
   template:
     src: ../../../secrets/{{ gcloud_credentials_file }}
@@ -26,7 +24,6 @@
     group: "{{ svc_user }}"
     mode: "644"
     force: no
-
 
 - name: authenticate gcloud SDK
   shell: >

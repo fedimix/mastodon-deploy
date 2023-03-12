@@ -1,8 +1,10 @@
 all:    
   vars:
     # data and config locations
-    data_root: /opt/data
     config_root: /opt/config
+    data_root: /opt/data
+    # storage_root is also the volue mount point
+    storage_root: /opt/data/storage
 
     # user and service owner
     svc_user: mastodon
@@ -12,5 +14,3 @@ all:
     ansible_user: root
     ansible_ssh_private_key_file: ~/.ssh/id_rsa
 
-    # podman
-    pod_namespace: mstdn

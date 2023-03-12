@@ -3,12 +3,11 @@
 - name: create the database
   shell: >
     podman run --name init \
-    --pod {{ pod_namespace }} \
+    --pod {{ namespace }} \
     --env-file={{ config_root }}/.env.prod \
     --env=DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
     {{ base_image }}:{{ base_image_version }} \
     bundle exec rake db:reset
-
 
 - name: create a root user for the instance
   shell: >
@@ -16,7 +15,6 @@
     --env-file={{ config_root }}/.env.prod \
     {{ base_image }}:{{ base_image_version }} \
     bin/tootctl accounts create ops --email {{ mastodon_owner_mail }} --confirmed --role Owner > /opt/config/master.key
-
 
 - name: cleanup
   shell: >

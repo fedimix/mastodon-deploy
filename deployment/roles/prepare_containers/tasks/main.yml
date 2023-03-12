@@ -1,5 +1,5 @@
 
-- name: create config and data locations
+- name: create container volumes
   become: true
   file:
     path: "{{ item }}"
@@ -7,19 +7,25 @@
     owner: "{{ svc_user }}"
     group: "{{ svc_user }}"
   with_list:
-    - "{{ data_root }}/storage/redis"
-    - "{{ data_root }}/storage/postgres"
-    - "{{ data_root }}/storage/mastodon"
-    - "{{ data_root }}/storage/router"
-    - "{{ data_root }}/router/public/default"
-    - "{{ config_root }}/router"
+    - "{{ storage_root }}/{{ namespace }}/redis"
+    - "{{ storage_root }}/{{ namespace }}/postgres"
+    - "{{ storage_root }}/{{ namespace }}/mastodon"
+    - "{{ storage_root }}/{{ namespace }}/public"
 
+- name: create router volumes
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+  with_list:
+    - "{{ storage_root }}/router/{{ namespace }}/public"
+    - "{{ config_root }}/router"
 
 - name: update all container images
   shell: >
     podman pull {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }}
-
-    podman tag {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }} mastodon:latest
 
     podman pull {{ artifact_repository }}/{{ router_image }}:{{ router_image_version }}
 

@@ -1,6 +1,9 @@
 all:
   hosts:
     mstdn.fedimix.dev:
+      # instance id
+      namespace: mstdn
+
       # top-level domains
       local_domain: example.dev
       web_domain: mstdn.example.dev
@@ -28,7 +31,6 @@ all:
 
       # attach storage here
       volume_name: scsi-0HC_Volume_xxx
-      volume_mount_point: /opt/data/storage
       
   vars:
     # stuff goes here

@@ -1,5 +1,6 @@
 
 - name: stop the app
+  ignore_errors: true
   shell: >
     podman stop sidekiq
 
@@ -7,16 +8,14 @@
 
     podman stop web
 
-
 - name: migrate the database
   shell: >
     podman run --name migration \
-    --pod {{ pod_namespace }} \
+    --pod {{ namespace }} \
     --env-file={{ config_root }}/.env.prod \
     --env=DISABLE_DATABASE_ENVIRONMENT_CHECK=1 \
     {{ base_image }}:{{ base_image_version }} \
     bundle exec rake db:migrate
-
 
 - name: start the app
   shell: >
@@ -25,7 +24,6 @@
     podman start streaming
 
     podman start web
-
 
 - name: cleanup
   shell: >

@@ -8,7 +8,6 @@
     mode: "644"
     force: no
 
-
 - name: create container configuration
   template:
     src: ../files/.env.prod
@@ -18,66 +17,53 @@
     mode: "644"
     force: yes
 
-
-- name: create a default static site
+- name: create a default static site for LOCAL_DOMAIN
   template:
     src: ../files/index.html
-    dest: "{{ data_root }}/router/public/default/index.html"
+    dest: "{{ storage_root }}/router/{{ namespace }}/public/index.html"
     owner: "{{ svc_user }}"
     group: "{{ svc_user }}"
     mode: "644"
     force: no
 
-
-# see https://github.com/quic-go/quic-go/wiki/UDP-Receive-Buffer-Size
-- name: update the node
-  shell: >
-    sysctl -w net.core.rmem_max=2500000
-
-
 - name: stop and remove the pod
   ignore_errors: true
   shell: >
-    podman pod stop {{ pod_namespace }}
+    podman pod stop {{ namespace }}
 
-    podman pod rm {{ pod_namespace }}
-
+    podman pod rm {{ namespace }}
 
 - name: create the pod
   shell: >
-    podman pod create -n {{ pod_namespace }} \
+    podman pod create -n {{ namespace }} \
     -p 80:80 -p 443:443
-
 
 - name: create the router container
   shell: >
     podman create --name router --restart always \
-    --pod {{ pod_namespace }} \
+    --pod {{ namespace }} \
     --env=LETS_ENCRYPT_EMAIL={{ lets_encrypt_mail }} \
-    -v {{ config_root }}:/config -v {{ data_root }}/router:/data \
+    -v {{ config_root }}:/config -v {{ storage_root }}/router/{{ namespace }}:/data \
     {{ router_image }}:{{ router_image_version }}
-
 
 - name: create redis container
   shell: >
     podman create --name redis --restart always \
-    --pod {{ pod_namespace }} \
-    -v {{ data_root }}/storage/redis:/data \
+    --pod {{ namespace }} \
+    -v {{ storage_root }}/{{ namespace }}/redis:/data \
     {{ redis_image }}:{{ redis_image_version }}
-
 
 - name: create postgres container
   shell: >
     podman create --name db --restart always \
-    --pod {{ pod_namespace }} \
+    --pod {{ namespace }} \
     --env-file={{ config_root }}/.env.prod \
-    -v {{ data_root }}/storage/postgres:/var/lib/postgresql/data \
+    -v {{ storage_root }}/{{ namespace }}/postgres:/var/lib/postgresql/data \
     {{ postgres_image }}:{{ postgres_image_version }}
-
 
 - name: start the pod
   shell: >
-    podman pod start {{ pod_namespace }}
+    podman pod start {{ namespace }}
 
 - name: pause to give containers time to start-up
   ansible.builtin.pause:

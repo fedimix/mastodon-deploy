@@ -3,7 +3,7 @@
 }
 
 {{ local_domain }} {
-	root * /data/public/default
+	root * /data/public
 	
         file_server
 

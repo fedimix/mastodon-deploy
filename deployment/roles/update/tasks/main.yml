@@ -2,13 +2,10 @@
   shell: >
     podman pull {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }}
 
-    podman tag {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }} mastodon:latest
-
-
 - name: stop the pod and remove the containers
   ignore_errors: true
   shell: >
-    podman pod stop {{ pod_namespace }}
+    podman pod stop {{ namespace }}
 
     podman rm web
 
@@ -16,36 +13,32 @@
 
     podman rm sidekiq
 
-
 - name: create web container
   shell: >
     podman create --name web --restart always \
-    --pod {{ pod_namespace }} \
+    --pod {{ namespace }} \
     --env-file={{ config_root }}/.env.prod \
-    -v {{ data_root }}/storage/mastodon:/mastodon/public/system \
+    -v {{ storage_root }}/{{ namespace }}/mastodon:/mastodon/public/system \
     {{ base_image }}:{{ base_image_version }} \
     bundle exec rails s -p 3000
-
 
 - name: create streaming container
   shell: >
     podman create --name streaming --restart always \
-    --pod {{ pod_namespace }} \
+    --pod {{ namespace }} \
     --env-file={{ config_root }}/.env.prod \
     {{ base_image }}:{{ base_image_version }} \
     node ./streaming
 
-
 - name: create sidekiq container
   shell: >
     podman create --name sidekiq --restart always \
-    --pod {{ pod_namespace }} \
+    --pod {{ namespace }} \
     --env-file={{ config_root }}/.env.prod \
-    -v {{ data_root }}/storage/mastodon:/mastodon/public/system \
+    -v {{ storage_root }}/{{ namespace }}/mastodon:/mastodon/public/system \
     {{ base_image }}:{{ base_image_version }} \
     bundle exec sidekiq
 
-
 - name: start the pod
   shell: >
-    podman pod start {{ pod_namespace }}
+    podman pod start {{ namespace }}
