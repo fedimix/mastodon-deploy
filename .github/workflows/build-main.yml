@@ -27,7 +27,7 @@ jobs:
       - name: checkout deployment artifacts
         uses: actions/checkout@v3
         with:
-          repository: txsvc/mastodon-deploy
+          repository: fedimix/mastodon-deploy
           path: ".build"
           
       - name: setup docker
