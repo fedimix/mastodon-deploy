@@ -3,6 +3,7 @@ all:
     # data and config locations
     config_root: /opt/config
     data_root: /opt/data
+    
     # storage_root is also the volue mount point
     storage_root: /opt/data/storage
 

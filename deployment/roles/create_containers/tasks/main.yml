@@ -10,7 +10,7 @@
 
 - name: create container configuration
   template:
-    src: ../files/.env.prod
+    src: ../../inventory/.env.prod
     dest: "{{ config_root }}/.env.prod"
     owner: "{{ svc_user }}"
     group: "{{ svc_user }}"

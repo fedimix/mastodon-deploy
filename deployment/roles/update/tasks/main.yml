@@ -2,6 +2,15 @@
   shell: >
     podman pull {{ artifact_repository }}/{{ base_image }}:{{ base_image_version }}
 
+- name: update container configuration
+  template:
+    src: ../../inventory/.env.prod
+    dest: "{{ config_root }}/.env.prod"
+    owner: "{{ svc_user }}"
+    group: "{{ svc_user }}"
+    mode: "644"
+    force: yes
+
 - name: stop the pod and remove the containers
   ignore_errors: true
   shell: >
