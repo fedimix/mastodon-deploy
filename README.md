@@ -12,7 +12,7 @@ To start the deployment:
 ```shell
 cd deployment
 
-ansible-playbook -i inventory/ playbooks/install.yml
+ansible-playbook -i *_host.yml -i inventory/ playbooks/install.yml
 ```
 
 Wait a couple of minutes ... done.
