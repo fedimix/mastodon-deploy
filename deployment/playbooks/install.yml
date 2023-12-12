@@ -3,7 +3,6 @@
 
   roles:
     - role: ../roles/prepare_node
-    - role: ../roles/prepare_gcloud
     - role: ../roles/prepare_containers
     - role: ../roles/create_containers
     - role: ../roles/init

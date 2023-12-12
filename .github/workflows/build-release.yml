@@ -1,4 +1,4 @@
-name: build-develop-containers
+name: build-latest-containers
 
 on:
   push:
@@ -6,27 +6,26 @@ on:
 
 env:
   CONTAINER_IMAGE: mastodon
-  CONTAINER_VERSION: develop
-  SOURCE_BASE_VERSION: v4.1.2
+  CONTAINER_VERSION: v4.2.3
 
   USERNAME: ${{ secrets.USERNAME }}
   CR_PAT: ${{ secrets.CR_PAT }}
 
   ARTIFACT_REPOSITORY: fedimix
   ARTIFACT_REPOSITORY_HOST: ghcr.io
-  
+
   GITHUB_SHA: ${{ github.sha }}
 
 jobs:
-  build_develop:
+  build_latest:
     runs-on: ubuntu-latest
 
     steps:
       - name: checkout upstream code
         uses: actions/checkout@v3
         with:
-          repository: fedimix/mastodon
-          ref: develop
+          repository: mastodon/mastodon
+          ref: v4.2.3
 
       - name: checkout deployment artifacts
         uses: actions/checkout@v3
@@ -43,12 +42,11 @@ jobs:
 
       - name: build the base container
         run: |
-          docker build --rm=true -t "$CONTAINER_IMAGE":"$CONTAINER_VERSION" -f .build/Dockerfile.develop .
+          docker build --rm=true -t "$CONTAINER_IMAGE":"$CONTAINER_VERSION" -f .build/Dockerfile.latest .
 
       - name: tag and push the container
         run: |
           docker tag "$CONTAINER_IMAGE":"$CONTAINER_VERSION" $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
-          docker tag "$CONTAINER_IMAGE":"$CONTAINER_VERSION" $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$SOURCE_BASE_VERSION
           docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
-          docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$SOURCE_BASE_VERSION
           docker images
+          

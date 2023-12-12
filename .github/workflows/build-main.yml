@@ -24,7 +24,7 @@ jobs:
       - name: checkout upstream code
         uses: actions/checkout@v3
         with:
-          repository: fedimix/mastodon
+          repository: mastodon/mastodon
           ref: main
 
       - name: checkout deployment artifacts
