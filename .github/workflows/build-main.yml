@@ -8,8 +8,11 @@ env:
   CONTAINER_IMAGE: mastodon
   CONTAINER_VERSION: latest
 
-  ARTIFACT_REPOSITORY: ${{ secrets.ARTIFACT_REPOSITORY }}
-  ARTIFACT_REPOSITORY_HOST: ${{ secrets.ARTIFACT_REPOSITORY_HOST }}
+  USERNAME: ${{ secrets.USERNAME }}
+  CR_PAT: ${{ secrets.CR_PAT }}
+
+  ARTIFACT_REPOSITORY: fedimix
+  ARTIFACT_REPOSITORY_HOST: ghcr.io
 
   GITHUB_SHA: ${{ github.sha }}
 
@@ -33,17 +36,9 @@ jobs:
       - name: setup docker
         uses: docker/setup-buildx-action@v2
 
-      - name: authenticate gcloud SDK
-        uses: google-github-actions/auth@v1
-        with:
-          credentials_json: "${{ secrets.GCLOUD_CREDENTIALS }}"
-        id: auth
-
-      - name: setup gcloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-
-      - name: authenticate artifact repository
-        run: gcloud auth configure-docker $ARTIFACT_REPOSITORY_HOST
+      - name: config ghcr.io
+        run: |
+          echo $CR_PAT | docker login ghcr.io -u $USERNAME --password-stdin
 
       - name: build the base container
         run: |
