@@ -8,11 +8,8 @@ env:
   CONTAINER_IMAGE: mastodon
   CONTAINER_VERSION: latest
 
-  USERNAME: ${{ secrets.USERNAME }}
-  CR_PAT: ${{ secrets.CR_PAT }}
-
-  ARTIFACT_REPOSITORY: fedimix
-  ARTIFACT_REPOSITORY_HOST: ghcr.io
+  ARTIFACT_REPOSITORY: ${{ secrets.ARTIFACT_REPOSITORY }}
+  ARTIFACT_REPOSITORY_HOST: ${{ secrets.ARTIFACT_REPOSITORY_HOST }}
 
   GITHUB_SHA: ${{ github.sha }}
 
