@@ -2,7 +2,7 @@ name: build-latest-containers
 
 on:
   push:
-    branches: [develop]
+    branches: [main]
 
 env:
   CONTAINER_IMAGE: mastodon
@@ -57,6 +57,6 @@ jobs:
           docker tag "$CONTAINER_IMAGE":"$CONTAINER_VERSION" $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
           docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
           docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
-          docker images
+
           
           
