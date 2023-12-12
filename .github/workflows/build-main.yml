@@ -42,11 +42,16 @@ jobs:
 
       - name: build the base container
         run: |
-          docker build --rm=true -t "$CONTAINER_IMAGE":"$CONTAINER_VERSION" -f .build/Dockerfile.latest .
+          docker build --rm=true \
+            --build-arg="TARGETPLATFORM=amd64" --build-arg="BUILDPLATFORM=linux/amd64" \
+            -t "$CONTAINER_IMAGE":"$CONTAINER_VERSION" -f .build/Dockerfile .
 
       - name: tag and push the container
         run: |
           docker tag "$CONTAINER_IMAGE":"$CONTAINER_VERSION" $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
+          docker tag "$CONTAINER_IMAGE":"$CONTAINER_VERSION" $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
           docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
-          docker images
+          docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
+
+          
           
