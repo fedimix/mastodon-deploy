@@ -24,6 +24,10 @@ jobs:
           repository: mastodon/mastodon
           ref: main
 
+      #- name: checkout tag
+      #  run: |
+      #    git fetch && git checkout $CONTAINER_VERSION
+      
       - name: checkout deployment artifacts
         uses: actions/checkout@v3
         with:
@@ -33,9 +37,17 @@ jobs:
       - name: setup docker
         uses: docker/setup-buildx-action@v2
 
-      - name: config ghcr.io
-        run: |
-          echo $CR_PAT | docker login ghcr.io -u $USERNAME --password-stdin
+      - name: authenticate gcloud SDK
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: "${{ secrets.GCLOUD_CREDENTIALS }}"
+        id: auth
+
+      - name: setup gcloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: authenticate artifact repository
+        run: gcloud auth configure-docker $ARTIFACT_REPOSITORY_HOST
 
       - name: build the base container
         run: |
