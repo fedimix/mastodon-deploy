@@ -1,4 +1,4 @@
-name: build-latest-containers
+name: containers-build-latest
 
 on:
   push:
@@ -49,6 +49,9 @@ jobs:
       - name: authenticate artifact repository
         run: gcloud auth configure-docker $ARTIFACT_REPOSITORY_HOST
 
+      - name: create short GITHUB_SHA
+        run: echo "SHORT_SHA=`echo ${GITHUB_SHA} | cut -c1-8`" >> $GITHUB_ENV
+
       - name: build the base container
         run: |
           docker build --rm=true \
@@ -58,9 +61,9 @@ jobs:
       - name: tag and push the container
         run: |
           docker tag "$CONTAINER_IMAGE":"$CONTAINER_VERSION" $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
-          docker tag "$CONTAINER_IMAGE":"$CONTAINER_VERSION" $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
+          docker tag "$CONTAINER_IMAGE":"$CONTAINER_VERSION" $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$SHORT_SHA
           docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
-          docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
+          docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$SHORT_SHA
 
           
           
