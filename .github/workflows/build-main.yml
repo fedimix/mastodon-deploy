@@ -8,13 +8,8 @@ env:
   CONTAINER_IMAGE: mastodon
   CONTAINER_VERSION: latest
 
-  #USERNAME: ${{ secrets.USERNAME }}
-  #CR_PAT: ${{ secrets.CR_PAT }}
   ARTIFACT_REPOSITORY: ${{ secrets.ARTIFACT_REPOSITORY }}
   ARTIFACT_REPOSITORY_HOST: ${{ secrets.ARTIFACT_REPOSITORY_HOST }}
-
-  #ARTIFACT_REPOSITORY: fedimix
-  #ARTIFACT_REPOSITORY_HOST: ghcr.io
 
   GITHUB_SHA: ${{ github.sha }}
 
@@ -49,10 +44,6 @@ jobs:
 
       - name: authenticate artifact repository
         run: gcloud auth configure-docker $ARTIFACT_REPOSITORY_HOST
-        
-      #- name: config ghcr.io
-      #  run: |
-      #    echo $CR_PAT | docker login ghcr.io -u $USERNAME --password-stdin
 
       - name: build the base container
         run: |
@@ -63,7 +54,9 @@ jobs:
       - name: tag and push the container
         run: |
           docker tag "$CONTAINER_IMAGE":"$CONTAINER_VERSION" $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
+          docker tag "$CONTAINER_IMAGE":"$CONTAINER_VERSION" $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
           docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$CONTAINER_VERSION
+          docker push $ARTIFACT_REPOSITORY_HOST/$ARTIFACT_REPOSITORY/$CONTAINER_IMAGE:$GITHUB_SHA
           docker images
           
           
