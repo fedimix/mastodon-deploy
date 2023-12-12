@@ -2,7 +2,7 @@ name: build-latest-containers
 
 on:
   push:
-    branches: [main]
+    branches: [develop]
 
 env:
   CONTAINER_IMAGE: mastodon
