@@ -51,7 +51,9 @@ jobs:
 
       - name: build the base container
         run: |
-          docker build --rm=true -t "$CONTAINER_IMAGE":"$CONTAINER_VERSION" -f .build/Dockerfile.latest .
+          docker build --rm=true \
+            --build-arg="TARGETPLATFORM=amd64" --build-arg="BUILDPLATFORM=linux/amd64" \
+            -t "$CONTAINER_IMAGE":"$CONTAINER_VERSION" -f .build/Dockerfile .
 
       - name: tag and push the container
         run: |
